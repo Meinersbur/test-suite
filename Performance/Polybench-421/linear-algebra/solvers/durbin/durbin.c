@@ -112,9 +112,11 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_durbin (n,
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_durbin (n,
 		 POLYBENCH_ARRAY(r),
 		 POLYBENCH_ARRAY(y));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;

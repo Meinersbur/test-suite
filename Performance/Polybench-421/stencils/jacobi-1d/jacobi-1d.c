@@ -99,7 +99,9 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_jacobi_1d(tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_jacobi_1d(tsteps, n, POLYBENCH_ARRAY(A), POLYBENCH_ARRAY(B));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;

@@ -105,11 +105,13 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_atax (m, n,
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_atax (m, n,
 	       POLYBENCH_ARRAY(A),
 	       POLYBENCH_ARRAY(x),
 	       POLYBENCH_ARRAY(y),
 	       POLYBENCH_ARRAY(tmp));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;

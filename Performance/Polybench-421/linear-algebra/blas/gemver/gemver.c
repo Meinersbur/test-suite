@@ -152,7 +152,8 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_gemver (n, alpha, beta,
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_gemver (n, alpha, beta,
 		 POLYBENCH_ARRAY(A),
 		 POLYBENCH_ARRAY(u1),
 		 POLYBENCH_ARRAY(v1),
@@ -162,6 +163,7 @@ int main(int argc, char** argv)
 		 POLYBENCH_ARRAY(x),
 		 POLYBENCH_ARRAY(y),
 		 POLYBENCH_ARRAY(z));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;

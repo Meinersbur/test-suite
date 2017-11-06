@@ -42,8 +42,11 @@
 #   define N 2200
 #  endif
 
-
 #endif /* !(M N) */
+
+#if !defined(REPEAT)
+  #define REPEAT 300
+#endif /* !(REPEAT) */
 
 # define _PB_M POLYBENCH_LOOP_BOUND(M,m)
 # define _PB_N POLYBENCH_LOOP_BOUND(N,n)

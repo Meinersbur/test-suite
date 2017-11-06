@@ -1,5 +1,8 @@
 set(POLYBENCH_SOURCE_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
+set(PROGRAM_IS_NONDETERMINISTIC ON)
+set(TIME_FROM_OUTPUT ON)
+
 set(GLOBAL_CFLAGS ${CFLAGS})
 set(GLOBAL_CPPFLAGS ${CPPFLAGS})
 set(GLOBAL_LDFLAGS ${LDFLAGS})
@@ -21,10 +24,10 @@ macro(add_polybench)
   
   set(benchname "Pb421")
   
-  set(CPPFLAGS  ${GLOBAL_CFLAGS} -I "${POLYBENCH_SOURCE_ROOT}/utilities" "${_dataset}" -ffast-math)
+  set(CPPFLAGS  ${GLOBAL_CFLAGS} -I "${POLYBENCH_SOURCE_ROOT}/utilities" "${_dataset}" -ffast-math -DPOLYBENCH_TIME)
   set(LDFLAGS ${GLOBAL_LDFLAGS} -lm)
   
-  llvm_singlesource(PREFIX "${benchname}-perf_" ${ARG_UNPARSED_ARGUMENTS})
+  #llvm_singlesource(PREFIX "${benchname}-perf_" ${ARG_UNPARSED_ARGUMENTS})
   
   list(APPEND CPPFLAGS -DPOLYBENCH_USE_RESTRICT)
   llvm_singlesource(PREFIX "${benchname}-perf-restrict_" ${ARG_UNPARSED_ARGUMENTS})
@@ -34,7 +37,7 @@ endmacro()
 
 
 add_subdirectory(datamining)
-add_subdirectory(delicm)
+#add_subdirectory(delicm)
 add_subdirectory(linear-algebra)
 add_subdirectory(medley)
 add_subdirectory(stencils)

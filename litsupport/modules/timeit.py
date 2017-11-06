@@ -40,7 +40,11 @@ def _mutateCommandLine(context, commandline):
         args += ["--redirect-input", "/dev/null"]
     args += ["--summary", timefile]
     # Remember timefilename for later
-    context.timefiles.append(timefile)
+    
+    if context.time_from_output:
+      pass
+    else:
+      context.timefiles.append(timefile)
 
     cmd.wrap(timeit, args)
     return cmd.toCommandline()
@@ -54,12 +58,20 @@ def _mutateScript(context, script):
 
 def _collectTime(context, timefiles, metric_name='exec_time'):
     time = 0.0
-    for timefile in timefiles:
+    
+    if context.time_from_output:
+      outfile = context.tmpBase + ".out"
+      with  open(outfile) as f:
+        timestr = f.readline()
+      localtime = float(timestr)
+      time += localtime
+    else:
+      for timefile in timefiles:
         time += getUserTime(timefile)
-
-    if len(timefiles) == 0:
-       logging.error("No timefiles for {name} (time={sum}): {timefiles}".format(n=len(timefiles),name=context.test.getFullName(), timefiles=timefiles,sum=time))
-       raise Exception("No timefile found")
+      if len(timefiles) == 0:
+         logging.error("No timefiles for {name} (time={sum}): {timefiles}".format(n=len(timefiles),name=context.test.getFullName(), timefiles=timefiles,sum=time))
+         raise Exception("No timefile found")
+         
     return {metric_name: time}
 
 

@@ -50,6 +50,10 @@
 
 #endif /* !(NQ NR NP) */
 
+#if !defined(REPEAT)
+  #define REPEAT 5
+#endif /* !(REPEAT) */
+
 # define _PB_NQ POLYBENCH_LOOP_BOUND(NQ,nq)
 # define _PB_NR POLYBENCH_LOOP_BOUND(NR,nr)
 # define _PB_NP POLYBENCH_LOOP_BOUND(NP,np)

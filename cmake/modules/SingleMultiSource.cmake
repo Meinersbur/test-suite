@@ -107,6 +107,10 @@ function(llvm_test_traditional name)
   if(HASH_PROGRAM_OUTPUT)
     llvm_test_verify("${CMAKE_SOURCE_DIR}/HashProgramOutput.sh %o")
   endif()
+  
+  if (TIME_FROM_OUTPUT)
+    llvm_test_timefromoutput()
+  endif ()
 
   if(NOT PROGRAM_IS_NONDETERMINISTIC)
     # Find the reference output file key name.

@@ -119,12 +119,14 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_bicg (m, n,
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_bicg (m, n,
 	       POLYBENCH_ARRAY(A),
 	       POLYBENCH_ARRAY(s),
 	       POLYBENCH_ARRAY(q),
 	       POLYBENCH_ARRAY(p),
 	       POLYBENCH_ARRAY(r));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;

@@ -42,6 +42,9 @@
 #   define N 2200
 #  endif
 
+#if !defined(REPEAT)
+  #define REPEAT 500
+#endif
 
 #endif /* !(M N) */
 

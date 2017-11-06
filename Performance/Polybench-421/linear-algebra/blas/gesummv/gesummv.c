@@ -121,12 +121,14 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_gesummv (n, alpha, beta,
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_gesummv (n, alpha, beta,
 		  POLYBENCH_ARRAY(A),
 		  POLYBENCH_ARRAY(B),
 		  POLYBENCH_ARRAY(tmp),
 		  POLYBENCH_ARRAY(x),
 		  POLYBENCH_ARRAY(y));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;

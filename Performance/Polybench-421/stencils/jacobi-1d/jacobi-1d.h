@@ -42,6 +42,9 @@
 #   define N 4000
 #  endif
 
+#if !defined(REPEAT)
+  #define REPEAT 1000
+#endif
 
 #endif /* !(TSTEPS N) */
 

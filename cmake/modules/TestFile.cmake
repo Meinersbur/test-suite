@@ -93,6 +93,10 @@ macro(llvm_test_prefix)
   endif()
 endmacro()
 
+macro(llvm_test_timefromoutput)
+  set(TESTSCRIPT "${TESTSCRIPT}TIMEFOMOUTPUT: YES\n")
+endmacro()
+
 macro(llvm_test_refout REFOUT)
   set(TESTSCRIPT "${TESTSCRIPT}REFOUT: ${REFOUT}\n")
 endmacro()

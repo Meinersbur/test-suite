@@ -29,10 +29,11 @@ def parse(context, filename):
     sources = []
     sourcedir = None
     refout = None
+    time_from_output = False
     # Note that we keep both "RUN" and "RUN:" in the list to stay compatible
     # with older lit versions.
     keywords = ['PREPARE:', 'PREPARE', 'RUN:', 'RUN', 'VERIFY:', 'VERIFY',
-                'METRIC:', 'METRIC', 'PREFIX:', 'SOURCE:', 'SOURCEDIR:', 'REFOUT:']
+                'METRIC:', 'METRIC', 'PREFIX:', 'SOURCE:', 'SOURCEDIR:', 'REFOUT:', 'TIMEFOMOUTPUT:']
     for line_number, command_type, ln in \
             parseIntegratedTestScriptCommands(filename, keywords):
         if command_type.startswith('PREPARE'):
@@ -57,6 +58,8 @@ def parse(context, filename):
             if refout is not None:
               raise ValueError("Reference output already defined")
             refout = ln.strip()
+        elif command_type == 'TIMEFOMOUTPUT:':
+            time_from_output = True
         else:
             raise ValueError("unknown script command type: %r" % (
                              command_type,))
@@ -94,5 +97,6 @@ def parse(context, filename):
     context.testfile = filename
     context.outfile = outfile
     context.refout = refout
+    context.time_from_output = time_from_output
     if not context.executable:
         logging.error("Could not determine executable name in %s" % filename)

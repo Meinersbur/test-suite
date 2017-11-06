@@ -101,7 +101,9 @@ int main(int argc, char** argv)
   polybench_start_instruments;
 
   /* Run kernel. */
-  kernel_trisolv (n, POLYBENCH_ARRAY(L), POLYBENCH_ARRAY(x), POLYBENCH_ARRAY(b));
+  for (int rep = 0; rep < REPEAT; rep+=1) {
+    kernel_trisolv (n, POLYBENCH_ARRAY(L), POLYBENCH_ARRAY(x), POLYBENCH_ARRAY(b));
+  }
 
   /* Stop and print timer. */
   polybench_stop_instruments;
