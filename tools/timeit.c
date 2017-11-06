@@ -18,6 +18,7 @@
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/wait.h>
+#include <sys/types.h> 
 
 /* Enumeration for our exit status codes. */
 enum ExitCode {
@@ -199,10 +200,10 @@ static int monitor_child_process(pid_t pid, double start_time) {
   // would.
   if (!g_summary_file) {
     if (g_posix_mode) {
-      fprintf(stderr, "real %12.4f\nuser %12.4f\nsys  %12.4f\n",
+      fprintf(stderr, "real %12.9f\nuser %12.9f\nsys  %12.9f\n",
               real_time, user_time, sys_time);
     } else {
-      fprintf(stderr, "%12.4f real %12.4f user %12.4f sys\n",
+      fprintf(stderr, "%12.9f real %12.9f user %12.9f sys\n",
               real_time, user_time, sys_time);
     }
   } else {
@@ -214,9 +215,9 @@ static int monitor_child_process(pid_t pid, double start_time) {
     }
 
     fprintf(fp, "exit %d\n", exit_status);
-    fprintf(fp, "%-10s %.4f\n", "real", real_time);
-    fprintf(fp, "%-10s %.4f\n", "user", user_time);
-    fprintf(fp, "%-10s %.4f\n", "sys", sys_time);
+    fprintf(fp, "%-10s %.9f\n", "real", real_time);
+    fprintf(fp, "%-10s %.9f\n", "user", user_time);
+    fprintf(fp, "%-10s %.9f\n", "sys", sys_time);
     fclose(fp);
   }
 

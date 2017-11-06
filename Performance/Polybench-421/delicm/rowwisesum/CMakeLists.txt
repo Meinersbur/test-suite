@@ -1,0 +1,1 @@
+add_polybench(DATASET -DNI=20000 -DNK=24000)

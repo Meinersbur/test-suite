@@ -1,0 +1,2 @@
+add_subdirectory(rowwisesum)
+add_subdirectory(columnwisesum)

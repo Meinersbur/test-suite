@@ -56,6 +56,10 @@ def _collectTime(context, timefiles, metric_name='exec_time'):
     time = 0.0
     for timefile in timefiles:
         time += getUserTime(timefile)
+
+    if len(timefiles) == 0:
+       logging.error("No timefiles for {name} (time={sum}): {timefiles}".format(n=len(timefiles),name=context.test.getFullName(), timefiles=timefiles,sum=time))
+       raise Exception("No timefile found")
     return {metric_name: time}
 
 

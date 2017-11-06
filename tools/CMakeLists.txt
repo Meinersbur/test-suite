@@ -5,6 +5,13 @@
 
 include(Host)
 
+if (WIN32)
+  add_custom_target(fpcmp-host)
+  add_custom_target(timeit-host)
+  add_custom_target(timeit-target)
+  return ()
+endif ()
+
 llvm_add_host_executable(fpcmp-host fpcmp fpcmp.c)
 
 option(TEST_SUITE_USE_PERF "Use perf (timeit.sh) instead of timeit.c" Off)

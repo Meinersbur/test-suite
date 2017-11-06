@@ -1,0 +1,1 @@
+add_polybench(DATASET -DTMAX=800 -DNX=1800 -DNY=2200)

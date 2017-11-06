@@ -114,6 +114,7 @@ macro (speccpu2017_benchmark)
     endif ()
 
     # Portability flags
+    message("ARCH=${ARCH} TARGET_OS=${TARGET_OS}")
     if(ARCH STREQUAL "x86" AND TARGET_OS STREQUAL "Linux")
       add_definitions(-DSPEC_LINUX) # 526.blender_r
       add_definitions(-DSPEC_AUTO_BYTEORDER=0x12345678)
@@ -127,6 +128,10 @@ macro (speccpu2017_benchmark)
         add_definitions(-D_FILE_OFFSET_BITS=64)
         add_definitions(-DSPEC_LINUX_I32) # perlbench
       endif ()
+    elseif (ARCH STREQUAL "x86" AND TARGET_OS STREQUAL "Windows")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+          add_definitions(-DSPEC_LLP64)
+        endif ()
     else ()
       message(FATAL_ERROR
         "Don't know portability flags for SPEC CPU 2017 on this platform")
@@ -228,6 +233,7 @@ macro(speccpu2017_validate_image _imgfile _cmpfile _outfile)
     llvm_add_host_executable(
       ${VALIDATOR}-host ${VALIDATOR} ${_validator_sources}
       LDFLAGS -lm
+      CPPFLAGS -DSPEC
     )
   endif ()
 

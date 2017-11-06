@@ -1,0 +1,35 @@
+CFLAGS+=-std=c++11
+
+ifneq ($(DBG),O)
+   OPTIM+=-O3
+endif
+OPTIM+=-g
+
+ifeq ($(MPI),O)
+   ifneq ($(I_MPI_ROOT),)
+      INCS+=-I$(I_MPI_ROOT)/include64
+      MPI_LIB=-L$(I_MPI_ROOT)/lib64
+      LIBS+=$(MPI_LIB) -lmpi -Wl,-rpath,$(MPI_LIB)
+      DEFS+=-DMPI_ON $(INCS)
+   else
+      INCS+=-I$(MPI_ROOT)/include
+      MPI_LIB=-L$(MPI_ROOT)/lib
+      LIBS+=$(MPI_LIB) -lmpi -Wl,-rpath,$(MPI_LIB)
+      DEFS+=-DMPI_ON $(INCS)
+   endif
+endif
+
+ifeq ($(CXX),icpc)
+   OPTIM+=-march=core-avx2 -fma
+   # -DAVX -D__vectorize_avx
+   OPTIM+=-mCG_use_zeroupper=0
+   OPTIM+=-mP1OPT_max_rec_copy_size=128
+   OPTIM+=-qopt-report -qopt-report-phase=vec
+endif
+
+ifeq ($(CXX),g++)
+   OPTIM+=-mavx2
+endif
+
+ARCHEXT=avx2
+#EOF
