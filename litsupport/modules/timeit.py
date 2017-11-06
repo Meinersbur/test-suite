@@ -42,7 +42,7 @@ def _mutateCommandLine(context, commandline):
     # Remember timefilename for later
     
     if context.time_from_output:
-      pass
+      assert(config.traditional_output)
     else:
       context.timefiles.append(timefile)
 
@@ -61,7 +61,8 @@ def _collectTime(context, timefiles, metric_name='exec_time'):
     
     if context.time_from_output:
       outfile = context.tmpBase + ".out"
-      with  open(outfile) as f:
+      print(outfile)
+      with open(outfile) as f:
         timestr = f.readline()
       localtime = float(timestr)
       time += localtime

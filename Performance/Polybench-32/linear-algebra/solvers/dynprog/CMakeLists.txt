@@ -1,1 +1,0 @@
-add_polybench(DATASET -DTSTEPS=8000 -DLENGTH=200)
