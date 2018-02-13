@@ -12,7 +12,7 @@ set(Source
   Towers.c
   Treesort.c
 )
-if(NOT TEST_SUITE_BENCHMARKING_ONLY)
+#if(NOT TEST_SUITE_BENCHMARKING_ONLY)
   list(APPEND Source IntMM.c)
-endif()
+#endif()
 llvm_singlesource()

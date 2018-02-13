@@ -1,0 +1,1 @@
+add_polybench(DATASET -DNI=1024 -DNJ=1024 -DNK=1024 -DNL=768 -DNM=768)

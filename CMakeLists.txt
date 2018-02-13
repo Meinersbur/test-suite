@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.4.3)
 
 include(CheckSymbolExists)
 
-project(test-suite C CXX)
+project(test-suite C CXX Fortran)
 
 # The test-suite is designed to be built in release mode anyway and
 # falls over unless -DNDEBUG is set.
@@ -32,7 +32,7 @@ if(${TEST_SUITE_SUPPRESS_WARNINGS})
 endif()
 
 # We want reproducible builds, so using __DATE__ and __TIME__ is bad
-add_definitions(-Werror=date-time)
+#add_definitions(-Werror=date-time)
 
 # Add path for custom modules
 set(CMAKE_MODULE_PATH
@@ -88,6 +88,7 @@ Make sure it is in your path or set TEST_SUITE_COLLECT_CODE_SIZE to Off")
   endif()
 endif()
 
+set(TEST_SUITE_STRIP "${CMAKE_STRIP}" CACHE FILEPATH "strip tool to use")
 
 # Enable profile generate mode in lit. Note that this does not automatically
 # add something like -fprofile-instr-generate to the compiler flags.
@@ -175,17 +176,20 @@ set(TEST_SUITE_LIT_FLAGS "-sv" CACHE STRING "Flags used when running lit")
 mark_as_advanced(TEST_SUITE_LIT TEST_SUITE_LIT_FLAGS)
 mark_as_advanced(TEST_SUITE_LIT)
 
+
 add_subdirectory(tools)
 # Shortcut for the path to the fpcmp executable
 set(FPCMP ${CMAKE_BINARY_DIR}/tools/fpcmp)
 
 option(TEST_SUITE_COLLECT_COMPILE_TIME
        "Measure compile time by wrapping compiler invocations in timeit" On)
-if(TEST_SUITE_COLLECT_COMPILE_TIME)
-  set(CMAKE_C_COMPILE_OBJECT "${CMAKE_BINARY_DIR}/tools/timeit --summary <OBJECT>.time ${CMAKE_C_COMPILE_OBJECT}")
-  set(CMAKE_CXX_COMPILE_OBJECT "${CMAKE_BINARY_DIR}/tools/timeit --summary <OBJECT>.time ${CMAKE_CXX_COMPILE_OBJECT}")
-  set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/tools/timeit --summary <TARGET>.link.time ${CMAKE_C_LINK_EXECUTABLE}")
-  set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/tools/timeit --summary <TARGET>.link.time ${CMAKE_CXX_LINK_EXECUTABLE}")
+if(TEST_SUITE_COLLECT_COMPILE_TIME AND NOT WIN32)
+  set(CMAKE_C_COMPILE_OBJECT "${CMAKE_BINARY_DIR}/tools/timeit --timeout 7200 --summary <OBJECT>.time ${CMAKE_C_COMPILE_OBJECT}")
+  set(CMAKE_CXX_COMPILE_OBJECT "${CMAKE_BINARY_DIR}/tools/timeit --timeout 7200 --summary <OBJECT>.time ${CMAKE_CXX_COMPILE_OBJECT}")
+  set(CMAKE_Fortran_COMPILE_OBJECT "${CMAKE_BINARY_DIR}/tools/timeit --timeout 7200 --summary <OBJECT>.time ${CMAKE_Fortran_COMPILE_OBJECT}")
+  set(CMAKE_C_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/tools/timeit --timeout 7200 --summary <TARGET>.link.time ${CMAKE_C_LINK_EXECUTABLE}")
+  set(CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/tools/timeit --timeout 7200 --summary <TARGET>.link.time ${CMAKE_CXX_LINK_EXECUTABLE}")
+  set(CMAKE_Fortran_LINK_EXECUTABLE "${CMAKE_BINARY_DIR}/tools/timeit --timeout 7200 --summary <TARGET>.link.time ${CMAKE_Fortran_LINK_EXECUTABLE}")
 endif()
 
 option(TEST_SUITE_BENCHMARKING_ONLY "Only run the benchmarking only subset" Off)
@@ -195,6 +199,8 @@ if(TEST_SUITE_COLLECT_STATS)
   list(APPEND CFLAGS -save-stats=obj)
   list(APPEND CXXFLAGS -save-stats=obj)
 endif()
+
+option(TEST_SUITE_UPDATE_REFERENCE "Update reference output" OFF)
 
 # Detect and include subdirectories
 # This allows to: Place additional test-suites into the toplevel test-suite
@@ -249,7 +255,9 @@ endif()
 if(TEST_SUITE_RUN_UNDER)
   list(APPEND LIT_MODULES run_under)
 endif()
-list(APPEND LIT_MODULES timeit)
+if (NOT WIN32)
+  list(APPEND LIT_MODULES timeit)
+endif ()
 if(TEST_SUITE_PROFILE_GENERATE)
   list(APPEND LIT_MODULES profilegen)
 endif()
@@ -258,6 +266,10 @@ if(TEST_SUITE_REMOTE_HOST)
 endif()
 if(TEST_SUITE_COLLECT_STATS)
   list(APPEND LIT_MODULES stats)
+endif()
+if (TEST_SUITE_UPDATE_REFERENCE)
+  message(WARNING "Going to update reference outout!!!!")
+  list(APPEND LIT_MODULES update_ref)
 endif()
 
 # Produce lit.site.cfg

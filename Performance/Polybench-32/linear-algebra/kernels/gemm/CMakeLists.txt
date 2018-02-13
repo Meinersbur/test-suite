@@ -1,0 +1,1 @@
+add_polybench(DATASET -DSTANDARD_DATASET)

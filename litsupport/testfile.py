@@ -25,10 +25,14 @@ def parse(context, filename):
     runscript = []
     verifyscript = []
     metricscripts = {}
+    prefix = None
+    sources = []
+    sourcedir = None
+    refout = None
     # Note that we keep both "RUN" and "RUN:" in the list to stay compatible
     # with older lit versions.
     keywords = ['PREPARE:', 'PREPARE', 'RUN:', 'RUN', 'VERIFY:', 'VERIFY',
-                'METRIC:', 'METRIC']
+                'METRIC:', 'METRIC', 'PREFIX:', 'SOURCE:', 'SOURCEDIR:', 'REFOUT:']
     for line_number, command_type, ln in \
             parseIntegratedTestScriptCommands(filename, keywords):
         if command_type.startswith('PREPARE'):
@@ -41,6 +45,18 @@ def parse(context, filename):
             metric, ln = ln.split(':', 1)
             metricscript = metricscripts.setdefault(metric.strip(), list())
             _parseShellCommand(metricscript, ln)
+        elif command_type == 'PREFIX:':
+            if prefix is not None:
+              raise ValueError("Prefix already defined")
+            prefix = ln.strip()
+        elif command_type == 'SOURCE:':
+            sources.append(ln.strip())
+        elif command_type == 'SOURCEDIR:':
+            sourcedir = ln.strip()
+        elif command_type == 'REFOUT:':
+            if refout is not None:
+              raise ValueError("Reference output already defined")
+            refout = ln.strip()
         else:
             raise ValueError("unknown script command type: %r" % (
                              command_type,))
@@ -72,5 +88,11 @@ def parse(context, filename):
     context.parsed_verifyscript = verifyscript
     context.parsed_metricscripts = metricscripts
     context.executable = shellcommand.getMainExecutable(context)
+    context.prefix = prefix
+    context.sources = sources
+    context.sourcedir = sourcedir
+    context.testfile = filename
+    context.outfile = outfile
+    context.refout = refout
     if not context.executable:
         logging.error("Could not determine executable name in %s" % filename)

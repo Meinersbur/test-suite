@@ -22,7 +22,7 @@ set(Source
   sieve.cpp
   strcat.cpp
 )
-if(NOT TEST_SUITE_BENCHMARKING_ONLY)
+#if(NOT TEST_SUITE_BENCHMARKING_ONLY)
   list(APPEND Source
     hello.cpp
     reversefile.cpp
@@ -31,7 +31,7 @@ if(NOT TEST_SUITE_BENCHMARKING_ONLY)
     wc.cpp
     wordfreq.cpp
   )
-endif()
+#endif()
 if(ARCH STREQUAL "XCore")
   if(NOT DEFINED SMALL_PROBLEM_SIZE)
     set(XCORE_TARGET_NEEDS_MEMORY 256)

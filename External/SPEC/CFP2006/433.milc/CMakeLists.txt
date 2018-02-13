@@ -2,6 +2,7 @@ list(APPEND LDFLAGS -lm)
 
 include_directories(${BENCHMARK_DIR}/src)
 add_definitions(-DFN -DFAST -DCONGRAD_TMP_VECTORS -DDSLASH_TMP_LINKS)
+list(APPEND LDFLAGS -lm)
 
 macro(test_input run_type)
   llvm_test_run(RUN_TYPE ${run_type}

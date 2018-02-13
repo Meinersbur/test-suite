@@ -106,7 +106,7 @@ macro (speccpu2017_benchmark)
 
 
     # Mandatory flags
-    add_definitions(-DSPEC -DNDEBUG)
+    add_definitions(-DSPEC -DSPEC_CPU -DNDEBUG)
 
     if (RATE)
       # rate benchmarks never use parallelism
@@ -114,7 +114,7 @@ macro (speccpu2017_benchmark)
     endif ()
 
     # Portability flags
-    if(ARCH STREQUAL "x86" AND TARGET_OS STREQUAL "Linux")
+    if (ARCH STREQUAL "x86" AND TARGET_OS STREQUAL "Linux")
       add_definitions(-DSPEC_LINUX) # 526.blender_r
       add_definitions(-DSPEC_AUTO_BYTEORDER=0x12345678)
       if (CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -127,7 +127,21 @@ macro (speccpu2017_benchmark)
         add_definitions(-D_FILE_OFFSET_BITS=64)
         add_definitions(-DSPEC_LINUX_I32) # perlbench
       endif ()
+    elseif (ARCH STREQUAL "AArch64" AND TARGET_OS STREQUAL "Linux" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+       # Linux ARM
+       add_definitions(-DSPEC_LINUX)
+       add_definitions(-DSPEC_LINUX_AARCH64)
+       #add_definitions(-DSPEC_AUTO_BYTEORDER=0x87654321) # Big endian
+       add_definitions(-DSPEC_AUTO_BYTEORDER=0x12345678)  # Little endian
+       add_definitions(-DSPEC_LP64)
+    elseif (ARCH STREQUAL "x86" AND TARGET_OS STREQUAL "Windows")
+        if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+          add_definitions(-DSPEC_LLP64)
+        endif ()
     else ()
+      message("ARCH: ${ARCH}")
+      message("TARGET_OS: ${TARGET_OS}")
+      message("CMAKE_SIZEOF_VOID_P: ${CMAKE_SIZEOF_VOID_P}")
       message(FATAL_ERROR
         "Don't know portability flags for SPEC CPU 2017 on this platform")
     endif ()
@@ -228,6 +242,7 @@ macro(speccpu2017_validate_image _imgfile _cmpfile _outfile)
     llvm_add_host_executable(
       ${VALIDATOR}-host ${VALIDATOR} ${_validator_sources}
       LDFLAGS -lm
+      CPPFLAGS -DSPEC
     )
   endif ()
 
@@ -295,7 +310,7 @@ macro(speccpu2017_add_executable)
     endforeach()
   else ()
     file(GLOB_RECURSE _sources
-      ${SRC_DIR}/*.c ${SRC_DIR}/*.cpp ${SRC_DIR}/*.cc ${SRC_DIR}/*.C)
+      ${SRC_DIR}/*.c ${SRC_DIR}/*.cpp ${SRC_DIR}/*.cc ${SRC_DIR}/*.C ${SRC_DIR}/*.f90)
   endif ()
 
   llvm_test_executable(${PROG} ${_sources})

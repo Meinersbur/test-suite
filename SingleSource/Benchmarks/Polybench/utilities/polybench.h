@@ -213,7 +213,6 @@ extern void* polybench_alloc_data(unsigned long long int n, int elt_size);
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <assert.h>
 #include <time.h>
 #include <sys/time.h>

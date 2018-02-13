@@ -1,0 +1,1 @@
+add_polybench(DATASET -DTSTEPS=500000 -DN=20000)

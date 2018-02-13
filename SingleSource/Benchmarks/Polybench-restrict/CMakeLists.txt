@@ -1,0 +1,6 @@
+list(APPEND LDFLAGS -lm)
+set(POLYBENCH_PREFIX restrict)
+add_subdirectory(datamining)
+add_subdirectory(linear-algebra)
+add_subdirectory(medley)
+add_subdirectory(stencils)

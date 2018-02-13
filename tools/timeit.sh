@@ -46,6 +46,6 @@ if [ "$APPEND_STATUS" = "1" ]; then
 fi
 
 echo exit $EXITCODE > $REPORT
-awk -F' ' '{if ($2 == "task-clock") print "user",$1/1000; else if($2 =="seconds") print "real",$1;}' $PERFSTAT >> $REPORT
+awk -F' ' '{ OFMT = "%.9f"; if ($2 == "task-clock") print "user",$1/1000; else if($2 =="seconds") print "real",$1;}' $PERFSTAT >> $REPORT
 
 exit $EXITCODE

@@ -25,7 +25,10 @@ macro(llvm_test_executable target)
   endif()
 
   set_property(GLOBAL APPEND PROPERTY TEST_SUITE_TARGETS ${target})
+  
+  llvm_test_sources(${ARGN})
   llvm_add_test(${CMAKE_CURRENT_BINARY_DIR}/${target}.test ${target_path})
+  
   test_suite_add_build_dependencies(${target})
 endmacro()
 

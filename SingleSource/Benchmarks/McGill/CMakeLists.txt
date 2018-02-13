@@ -5,7 +5,7 @@ set(Source
   misr.c
   queens.c
 )
-if(NOT TEST_SUITE_BENCHMARKING_ONLY)
+#if(NOT TEST_SUITE_BENCHMARKING_ONLY)
   list(APPEND Source exptree.c)
-endif()
+#endif()
 llvm_singlesource()

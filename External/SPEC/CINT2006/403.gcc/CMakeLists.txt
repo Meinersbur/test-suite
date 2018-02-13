@@ -22,7 +22,7 @@ macro(test_input run_type ifile sfile)
 endmacro()
 
 test_input(test cccp.in cccp.s)
-test_input(train integrate.in integrate.s)
+test_input(train integrate.i integrate.s)
 test_input(ref 166.in 166.s)
 test_input(ref 200.in 200.s)
 test_input(ref c-typeck.in c-typeck.s)

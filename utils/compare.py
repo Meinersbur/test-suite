@@ -9,6 +9,7 @@ import os.path
 import re
 import numbers
 import argparse
+import six
 
 def read_lit_json(filename):
     import json
@@ -31,7 +32,7 @@ def read_lit_json(filename):
             sys.exit(1)
         names.add(name)
         if "metrics" not in test:
-            print "Warning: '%s' has No metrics!" % test['name']
+            print("Warning: '%s' has No metrics!" % test['name'])
             continue
         for name in test["metrics"].keys():
             if name not in columnindexes:
@@ -54,9 +55,9 @@ def read_lit_json(filename):
 
         datarow = [nan] * len(columns)
         if "metrics" in test:
-            for (metricname, value) in test['metrics'].iteritems():
+            for (metricname, value) in six.iteritems(test['metrics']):
                 datarow[columnindexes[metricname]] = value
-        for (name, value) in test.iteritems():
+        for (name, value) in six.iteritems(test):
             index = columnindexes.get(name)
             if index is not None:
                 datarow[index] = test[name]
@@ -148,7 +149,7 @@ def print_filter_stats(reason, before, after):
     n_after = len(after.groupby(level=1))
     n_filtered = n_before - n_after
     if n_filtered != 0:
-        print "%s: %s (filtered out)" % (reason, n_filtered)
+        print("%s: %s (filtered out)" % (reason, n_filtered))
 
 # Truncate a string to a maximum length by keeping a prefix, a suffix and ...
 # in the middle
@@ -202,7 +203,7 @@ def print_result(d, limit_output=True, shorten_names=True,
     dataout = d
     if limit_output:
         # Take 15 topmost elements
-        dataout = dataout.head(15)
+        dataout = dataout.head(30)
 
     # Turn index into a column so we can format it...
     dataout.insert(0, 'Program', dataout.index)
@@ -222,8 +223,8 @@ def print_result(d, limit_output=True, shorten_names=True,
     pd.set_option("display.max_colwidth", 0)
     out = dataout.to_string(index=False, justify='left',
                             float_format=float_format, formatters=formatters)
-    print out
-    print d.describe()
+    print(out)
+    print(d.describe())
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog='compare.py')
@@ -249,10 +250,13 @@ if __name__ == "__main__":
                         dest='merge_function', const=pd.DataFrame.min)
     parser.add_argument('--merge-max', action='store_const',
                         dest='merge_function', const=pd.DataFrame.max)
+    parser.add_argument('--merge-median', action='store_const',
+                        dest='merge_function', const=pd.DataFrame.median)
     parser.add_argument('--lhs-name', default="lhs",
                         help="Name used to describe left side in 'vs' mode")
     parser.add_argument('--rhs-name', default="rhs",
                         help="Name used to describe right side in 'vs' mode")
+
     parser.add_argument('files', metavar='FILE', nargs='+')
     config = parser.parse_args()
 
@@ -303,7 +307,7 @@ if __name__ == "__main__":
     # Filter data
     proggroup = data.groupby(level=1)
     initial_size = len(proggroup.indices)
-    print "Tests: %s" % (initial_size,)
+    print("Tests: %s" % (initial_size,))
     if config.filter_failed and hasattr(data, 'Exec'):
         newdata = filter_failed(data)
         print_filter_stats("Failed", data, newdata)
@@ -326,7 +330,7 @@ if __name__ == "__main__":
         data = newdata
     final_size = len(data.groupby(level=1))
     if final_size != initial_size:
-        print "Remaining: %d" % (final_size,)
+        print("Remaining: %d" % (final_size,))
 
     # Reduce / add columns
     print "Metric: %s" % (",".join(metrics),)
@@ -339,7 +343,7 @@ if __name__ == "__main__":
         sortkey = data.columns[0]
 
     # Print data
-    print ""
+    print("")
     shorten_names = not config.full
     limit_output = (not config.all) and (not config.full)
     print_result(data, limit_output, shorten_names, config.show_diff, sortkey)

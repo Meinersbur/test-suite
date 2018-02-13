@@ -1,0 +1,3 @@
+add_subdirectory(HydroC99_2DMpi)
+add_subdirectory(HydroC99_2DMpiOmpCG)
+add_subdirectory(HydroCplusMPI)
